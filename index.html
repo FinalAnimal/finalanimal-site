@@ -7,10 +7,10 @@
   <meta name="description" content="Conor Maloney is an audiovisual artist based in Galway, Ireland. Immersive installation, audioreactive performance and electronic instruments.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <style>
-    body { background: #050a06; overflow: hidden; height: 100vh; }
+    body { background: #080808; overflow: hidden; height: 100vh; }
 
     #hero-canvas {
       position: fixed;
@@ -30,9 +30,9 @@
     }
 
     .hero-eyebrow {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 10px;
-      letter-spacing: .22em;
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: .16em;
       color: var(--accent);
       margin-bottom: 16px;
       opacity: 0;
@@ -40,10 +40,10 @@
     }
 
     .hero-name {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: var(--display);
       font-size: clamp(52px, 7vw, 88px);
       font-weight: 300;
-      color: #efffef;
+      color: var(--text);
       line-height: 1.0;
       letter-spacing: .02em;
       margin-bottom: 8px;
@@ -52,9 +52,9 @@
     }
 
     .hero-sub {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 11px;
-      letter-spacing: .18em;
+      font-family: var(--sans);
+      font-size: 12px;
+      letter-spacing: .14em;
       color: var(--accent-dim);
       margin-bottom: 40px;
       opacity: 0;
@@ -62,28 +62,36 @@
     }
 
     .enter-btn {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 14px;
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--sans);
       font-size: 11px;
-      letter-spacing: .2em;
-      color: #efffef;
-      border: 0.5px solid rgba(255,255,255,.3);
-      padding: 13px 36px;
-      background: transparent;
+      font-weight: 500;
+      letter-spacing: .22em;
+      color: var(--text);
+      border: 0.5px solid rgba(242,239,231,.38);
+      padding: 15px 42px;
+      background: rgba(8,8,8,.18);
+      backdrop-filter: blur(8px);
       cursor: pointer;
       text-decoration: none;
-      transition: border-color .4s, color .4s, letter-spacing .4s;
+      transition: border-color .4s, color .4s, letter-spacing .4s, background .4s;
       pointer-events: all;
       opacity: 0;
-      animation: fadeUp .8s ease 1.4s forwards;
+      animation: fadeButton .8s ease 1.4s forwards;
       width: fit-content;
     }
 
     .enter-btn:hover {
       border-color: var(--accent);
-      color: var(--accent);
+      color: var(--text);
+      background: rgba(242,239,231,.06);
       letter-spacing: .28em;
     }
 
@@ -110,9 +118,9 @@
     }
 
     .logo {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 10px;
-      letter-spacing: .2em;
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: .16em;
       color: var(--accent-dim);
       opacity: 0;
       animation: fadeIn .8s ease .2s forwards;
@@ -127,9 +135,9 @@
     }
 
     .hero-links a {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 9px;
-      letter-spacing: .18em;
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: .14em;
       color: var(--accent-dim);
       text-decoration: none;
       transition: color .3s;
@@ -141,10 +149,10 @@
       position: fixed;
       bottom: 56px;
       right: 64px;
-      font-family: 'Share Tech Mono', monospace;
+      font-family: var(--sans);
       font-size: 9px;
       letter-spacing: .14em;
-      color: rgba(42,112,64,.4);
+      color: rgba(139,135,125,.45);
       writing-mode: vertical-rl;
       opacity: 0;
       animation: fadeIn 1s ease 2s forwards;
@@ -153,6 +161,10 @@
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeButton {
+      from { opacity: 0; transform: translate(-50%, calc(-50% + 18px)); }
+      to   { opacity: 1; transform: translate(-50%, -50%); }
     }
     @keyframes fadeIn {
       from { opacity: 0; }
@@ -176,7 +188,7 @@
 <div class="hero-ui">
   <div class="hero-eyebrow">AUDIOVISUAL ARTIST — GALWAY, IRELAND</div>
   <h1 class="hero-name">Conor<br>Maloney</h1>
-  <div class="hero-sub">FINAL ANIMAL<span style="opacity:.4">_</span></div>
+  <div class="hero-sub">FINAL ANIMAL</div>
   <a href="work.html" class="enter-btn">
     ENTER
     <span class="arrow">→</span>
@@ -199,7 +211,7 @@ function buildTree() {
   branches = [];
   pts = [];
   const cx = W * .5, cy = H * .62;
-  const ACCENT = '#3aff6a';
+  const ACCENT = '#d8d4c8';
 
   function branch(x1, y1, x2, y2, depth, maxDepth) {
     if (depth > maxDepth) return;
@@ -258,15 +270,15 @@ function draw() {
   const cx = W * .5, cy = H * .62;
 
   const gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, H * .45);
-  gr.addColorStop(0, 'rgba(58,255,106,.08)');
-  gr.addColorStop(.5, 'rgba(20,80,35,.04)');
-  gr.addColorStop(1, 'rgba(5,10,6,0)');
+  gr.addColorStop(0, 'rgba(216,212,200,.055)');
+  gr.addColorStop(.5, 'rgba(180,170,150,.025)');
+  gr.addColorStop(1, 'rgba(8,8,8,0)');
   ctx.fillStyle = gr;
   ctx.fillRect(0, 0, W, H);
 
   const rg = ctx.createRadialGradient(cx, H * .92, 0, cx, H * .92, H * .3);
-  rg.addColorStop(0, 'rgba(100,255,130,.1)');
-  rg.addColorStop(1, 'rgba(5,10,6,0)');
+  rg.addColorStop(0, 'rgba(216,212,200,.055)');
+  rg.addColorStop(1, 'rgba(8,8,8,0)');
   ctx.fillStyle = rg;
   ctx.fillRect(0, 0, W, H);
 
@@ -275,7 +287,7 @@ function draw() {
     ctx.beginPath();
     ctx.moveTo(b.x1, b.y1);
     ctx.lineTo(b.x2, b.y2);
-    ctx.strokeStyle = `rgba(180,255,190,${b.alpha * flicker})`;
+    ctx.strokeStyle = `rgba(216,212,200,${b.alpha * flicker})`;
     ctx.lineWidth = b.w;
     ctx.stroke();
   }
@@ -287,14 +299,14 @@ function draw() {
 
   ctx.beginPath();
   ctx.arc(cx, cy, 14 + Math.sin(t * 1.8) * 2, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(120,255,150,${.1 + Math.sin(t * 1.8) * .04})`;
+  ctx.fillStyle = `rgba(216,212,200,${.1 + Math.sin(t * 1.8) * .04})`;
   ctx.fill();
 
   for (const p of pts) {
     const pulse = .5 + Math.sin(t * p.speed + p.phase) * .4;
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(160,255,180,${p.alpha * pulse})`;
+    ctx.fillStyle = `rgba(230,226,216,${p.alpha * pulse})`;
     ctx.fill();
   }
 
