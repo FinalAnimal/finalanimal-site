@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Not found — Final Animal</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 48px 24px;
+    }
+
+    .code {
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: .22em;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .headline {
+      font-family: var(--display);
+      font-size: clamp(34px, 5vw, 54px);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 18px;
+    }
+
+    .sub {
+      font-family: var(--display);
+      font-size: 17px;
+      color: var(--text-dim);
+      max-width: 420px;
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+
+    .links {
+      display: flex;
+      gap: 26px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .links a {
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: .14em;
+      color: var(--accent-dim);
+      transition: color .3s;
+      border-bottom: 0.5px solid transparent;
+      padding-bottom: 2px;
+    }
+    .links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<div class="code">404</div>
+<h1 class="headline">Nothing here</h1>
+<p class="sub">That page doesn't exist — or it moved. The work is still where you left it.</p>
+
+<div class="links">
+  <a href="index.html">Home</a>
+  <a href="work.html">Work</a>
+  <a href="about.html">About</a>
+  <a href="contact.html">Contact</a>
+</div>
+
+</body>
+</html>

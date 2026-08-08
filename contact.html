@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Final Animal</title>
+  <meta name="description" content="Contact Conor Maloney — Final Animal. Enquiries about commissions, exhibitions, performance and collaboration.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { min-height: 100vh; overflow-x: hidden; }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 48px;
+      background: linear-gradient(to bottom, rgba(8,8,8,.95) 0%, rgba(8,8,8,0) 100%);
+      pointer-events: none;
+    }
+
+    .nav-logo {
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: .18em;
+      color: var(--accent-dim);
+      pointer-events: all;
+      transition: color .3s;
+    }
+    .nav-logo:hover { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      pointer-events: all;
+    }
+    .nav-links a {
+      font-family: var(--sans);
+      font-size: 11px;
+      letter-spacing: .14em;
+      color: var(--accent-dim);
+      transition: color .3s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+    /* ── PAGE ── */
+    .page {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 148px 48px 96px;
+    }
+
+    .eyebrow {
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: .18em;
+      color: var(--accent);
+      margin-bottom: 22px;
+    }
+
+    .page-title {
+      font-family: var(--display);
+      font-size: clamp(40px, 6vw, 68px);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: .01em;
+      margin-bottom: 40px;
+    }
+
+    .lede {
+      font-family: var(--display);
+      font-size: clamp(20px, 2.4vw, 26px);
+      font-weight: 300;
+      line-height: 1.5;
+      color: var(--text);
+      max-width: 600px;
+      margin-bottom: 64px;
+    }
+
+    /* ── CONTACT BLOCKS ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0;
+      border-top: 0.5px solid var(--border);
+    }
+
+    .contact-block {
+      padding: 30px 0;
+      border-bottom: 0.5px solid var(--border);
+      padding-right: 40px;
+    }
+
+    .contact-label {
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: .18em;
+      color: var(--accent-dim);
+      margin-bottom: 12px;
+    }
+
+    .contact-value {
+      font-family: var(--display);
+      font-size: 22px;
+      font-weight: 300;
+      color: var(--text);
+      line-height: 1.35;
+      transition: color .3s;
+      display: inline-block;
+      border-bottom: 0.5px solid transparent;
+    }
+    a.contact-value:hover {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .contact-note {
+      font-family: var(--sans);
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-faint);
+      margin-top: 8px;
+    }
+
+    @media (max-width: 560px) {
+      .page { padding: 128px 24px 72px; }
+      .contact-block { padding-right: 0; }
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      border-top: 0.5px solid var(--border);
+      padding: 28px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-copy {
+      font-family: var(--sans);
+      font-size: 9px;
+      letter-spacing: .12em;
+      color: var(--text-faint);
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+    .footer-links a {
+      font-family: var(--sans);
+      font-size: 9px;
+      letter-spacing: .14em;
+      color: var(--accent-dim);
+      transition: color .3s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">FINAL ANIMAL</a>
+  <div class="nav-links">
+    <a href="work.html">Work</a>
+    <a href="about.html">About</a>
+    <a href="contact.html" class="active">Contact</a>
+  </div>
+</nav>
+
+<main class="page">
+  <div class="eyebrow">GET IN TOUCH</div>
+  <h1 class="page-title">Contact</h1>
+
+  <p class="lede">
+    Enquiries about commissions, exhibitions, performance and collaboration are welcome.
+  </p>
+
+  <div class="contact-grid">
+
+    <div class="contact-block">
+      <div class="contact-label">EMAIL</div>
+      <a class="contact-value" href="mailto:conor@finalanimal.com">conor@finalanimal.com</a>
+      <div class="contact-note">The most reliable way to reach me.</div>
+    </div>
+
+    <div class="contact-block">
+      <div class="contact-label">BASED IN</div>
+      <div class="contact-value">Galway, Ireland</div>
+      <div class="contact-note">Available to travel for installation and performance.</div>
+    </div>
+
+    <!--
+      SOCIAL LINKS — replace the href values below with your real profile URLs.
+      They are intentionally left pointing at the site root rather than guessed,
+      so nothing links somewhere wrong. Delete either block if you don't use it.
+    -->
+    <div class="contact-block">
+      <div class="contact-label">INSTAGRAM</div>
+      <a class="contact-value" href="#">@—</a>
+      <div class="contact-note">Add your profile URL in contact.html.</div>
+    </div>
+
+    <div class="contact-block">
+      <div class="contact-label">VIMEO</div>
+      <a class="contact-value" href="#">—</a>
+      <div class="contact-note">Add your profile URL in contact.html.</div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-copy">© Conor Maloney — Final Animal</div>
+  <div class="footer-links">
+    <a href="mailto:conor@finalanimal.com">conor@finalanimal.com</a>
+    <a href="work.html">Work</a>
+    <a href="about.html">About</a>
+  </div>
+</footer>
+
+</body>
+</html>

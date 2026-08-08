@@ -1,25 +1,72 @@
 # finalanimal.com — site files
 
-Three files. Drop them in a folder, push to GitHub, connect to Netlify.
+A plain static site. No build step, no dependencies. Edit the HTML, push, it deploys.
 
 ## Files
 
-- `index.html` — hero landing page with animated point cloud canvas
-- `work.html`  — filterable portfolio grid with lightbox
-- `style.css`  — shared variables and base styles
+- `index.html`   — hero landing page with animated point cloud canvas
+- `work.html`    — filterable portfolio grid with lightbox
+- `about.html`   — biography and selected works
+- `contact.html` — contact details
+- `404.html`     — not-found page
+- `style.css`    — shared variables and base styles
 
-## Deploying to Netlify (free tier)
+## Hosting
 
-1. Create a free account at netlify.com
-2. Drag and drop this folder onto the Netlify dashboard, OR
-3. Push to a GitHub repo → New site from Git → select repo → Deploy
-4. Point your domain: Netlify dashboard → Domain settings → Add custom domain → enter finalanimal.com
-5. In your domain registrar (Bluehost or wherever the domain lives), change the nameservers to Netlify's:
-   - dns1.p01.nsone.net
-   - dns2.p01.nsone.net
-   - dns3.p01.nsone.net
-   - dns4.p01.nsone.net
-   SSL is automatic (Let's Encrypt). No Bluehost hosting needed.
+The site is hosted on **Cloudflare Pages**, project `finalanimal-site`,
+connected to the GitHub repo `FinalAnimal/finalanimal-site`.
+
+  Production branch:      main
+  Framework preset:       None
+  Build command:          (none)
+  Build output directory: /
+
+Pushing to `main` triggers a deploy automatically. There is nothing to build —
+Cloudflare serves the files exactly as they are in the repo.
+
+Project URL:  https://finalanimal-site.pages.dev
+Live site:    https://finalanimal.com  (and www)
+
+## DNS — read this before changing anything
+
+The domain is registered through Bluehost (registrar of record: Network Solutions)
+but DNS is served by **Cloudflare**. Nameservers:
+
+  cullen.ns.cloudflare.com
+  donna.ns.cloudflare.com
+
+IMPORTANT: in the Bluehost domain panel these must stay set to *custom*
+nameservers. If the domain is switched back to "using default nameservers",
+Bluehost reasserts ns1/ns2.bluehost.com and the site goes down — this is exactly
+what happened on 31 July 2026, when finalanimal.com started serving a Bluehost
+WordPress starter page instead of this site.
+
+### Email lives on Bluehost — do not proxy it
+
+conor@finalanimal.com is hosted on Bluehost, not Cloudflare. These records must
+stay set to **DNS only** (grey cloud) in the Cloudflare dashboard. If any of them
+are switched to Proxied, mail silently stops being delivered, because Cloudflare's
+proxy only carries HTTP/HTTPS:
+
+  MX      finalanimal.com    -> mail.finalanimal.com
+  A       mail               -> 162.241.244.112
+  A       webmail            -> 162.241.244.112
+  CNAME   imap, pop, smtp    -> mail.finalanimal.com
+  A       cpanel, whm, ftp, webdisk, autoconfig, autodiscover, cpcalendars, cpcontacts
+  TXT     SPF                -> v=spf1 a mx include:websitewelcome.com ~all
+  TXT     default._domainkey -> DKIM key
+
+Only the apex (`finalanimal.com`) and `www` should be Proxied — those are the two
+that point at Pages.
+
+## Cloudflare settings worth knowing
+
+- **Email Address Obfuscation** (Scrape Shield) is ON by default. It rewrites the
+  `mailto:` link in the footer into an encoded `/cdn-cgi/l/email-protection` link
+  that reads "[email protected]" until JavaScript decodes it. Turn it off if you
+  want the plain address in the markup.
+- Requests to `work.html` are 308-redirected to `/work`. Both work; Pages prefers
+  the extensionless form.
 
 ## Adding your own images
 
@@ -47,19 +94,22 @@ The lightbox will embed it automatically using youtube-nocookie.com
 the correct Google account, or you've enabled embeds for the video).
 
 To enable embedding for a private YouTube video:
-  YouTube Studio → select video → Details → More options
-  → Allow embedding → Save
+  YouTube Studio -> select video -> Details -> More options
+  -> Allow embedding -> Save
 
 ## Customising
 
-Colours are CSS variables in style.css:
-  --accent      #3aff6a    the luminous green
-  --accent-dim  #2a7040    muted green for nav/labels
-  --bg          #050a06    near-black with green tint
+Colours are CSS variables in style.css. The palette is bone/off-white on
+near-black:
+
+  --accent      #d8d4c8    warm bone, used for labels and accents
+  --accent-dim  #8b877d    muted, for nav and secondary labels
+  --text        #f2efe7    body text
+  --bg          #080808    near-black
 
 Fonts via Google Fonts (already linked):
   Cormorant Garamond — display/headings
-  Share Tech Mono    — labels, nav, monospace details
+  Inter              — labels, nav, small caps details
 
 Point cloud tree on the homepage:
   All canvas animation is in the <script> block at the bottom of index.html.
