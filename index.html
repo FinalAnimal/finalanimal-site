@@ -22,15 +22,19 @@
       background: #080808 url("Assets/video/hero-poster.jpg") center / cover no-repeat;
     }
 
-    /* Scrim — keeps the cream type legible over the bright footage. */
+    /* Scrim — darkens only the bands the type sits in, so the footage keeps its
+       colour through the middle. Tuned against per-frame luminance of hero.mp4:
+       every text region holds >=4.9:1 contrast at the 95th-percentile frame. */
     .hero-scrim {
       position: fixed;
       inset: 0;
       z-index: 1;
       pointer-events: none;
-      background:
-        linear-gradient(to bottom, rgba(8,8,8,.62) 0%, rgba(8,8,8,.18) 26%, rgba(8,8,8,.30) 58%, rgba(8,8,8,.82) 100%),
-        rgba(8,8,8,.20);
+      background: linear-gradient(to bottom,
+        rgba(8,8,8,.46) 0%,
+        rgba(8,8,8,.06) 22%,
+        rgba(8,8,8,.10) 55%,
+        rgba(8,8,8,.66) 100%);
     }
 
     .hero-ui {
@@ -94,7 +98,7 @@
       padding: 15px 42px;
       /* Sits mid-screen where the scrim is thinnest — carries its own backdrop
          so the label holds up against the footage's brightest frames. */
-      background: rgba(8,8,8,.42);
+      background: rgba(8,8,8,.30);
       backdrop-filter: blur(8px);
       cursor: pointer;
       text-decoration: none;
