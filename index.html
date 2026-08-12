@@ -12,11 +12,25 @@
   <style>
     body { background: #080808; overflow: hidden; height: 100vh; }
 
-    #hero-canvas {
+    #hero-video {
       position: fixed;
       inset: 0;
       width: 100%;
       height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      background: #080808 url("Assets/video/hero-poster.jpg") center / cover no-repeat;
+    }
+
+    /* Scrim — keeps the cream type legible over the bright footage. */
+    .hero-scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        linear-gradient(to bottom, rgba(8,8,8,.62) 0%, rgba(8,8,8,.18) 26%, rgba(8,8,8,.30) 58%, rgba(8,8,8,.82) 100%),
+        rgba(8,8,8,.20);
     }
 
     .hero-ui {
@@ -27,6 +41,7 @@
       justify-content: flex-end;
       padding: 0 64px 56px;
       pointer-events: none;
+      z-index: 2;
     }
 
     .hero-eyebrow {
@@ -77,7 +92,9 @@
       color: var(--text);
       border: 0.5px solid rgba(242,239,231,.38);
       padding: 15px 42px;
-      background: rgba(8,8,8,.18);
+      /* Sits mid-screen where the scrim is thinnest — carries its own backdrop
+         so the label holds up against the footage's brightest frames. */
+      background: rgba(8,8,8,.42);
       backdrop-filter: blur(8px);
       cursor: pointer;
       text-decoration: none;
@@ -91,7 +108,7 @@
     .enter-btn:hover {
       border-color: var(--accent);
       color: var(--text);
-      background: rgba(242,239,231,.06);
+      background: linear-gradient(rgba(242,239,231,.07), rgba(242,239,231,.07)), rgba(8,8,8,.42);
       letter-spacing: .28em;
     }
 
@@ -115,6 +132,7 @@
       align-items: center;
       padding: 28px 64px;
       pointer-events: none;
+      z-index: 2;
     }
 
     .logo {
@@ -156,7 +174,16 @@
       writing-mode: vertical-rl;
       opacity: 0;
       animation: fadeIn 1s ease 2s forwards;
+      z-index: 2;
     }
+
+    @media (max-width: 640px) {
+      .hero-ui  { padding: 0 28px 44px; }
+      .hero-nav { padding: 22px 28px; }
+      .scroll-hint { right: 28px; bottom: 44px; }
+    }
+
+    /* Reduced motion is handled in script — the video holds on its poster frame. */
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(18px); }
@@ -174,7 +201,15 @@
 </head>
 <body>
 
-<canvas id="hero-canvas"></canvas>
+<video id="hero-video"
+       autoplay muted loop playsinline
+       preload="auto"
+       poster="Assets/video/hero-poster.jpg"
+       aria-hidden="true" tabindex="-1">
+  <source src="Assets/video/hero.mp4" type="video/mp4">
+</video>
+
+<div class="hero-scrim"></div>
 
 <nav class="hero-nav">
   <div class="logo">FINAL ANIMAL</div>
@@ -198,125 +233,39 @@
 <div class="scroll-hint">finalanimal.com</div>
 
 <script>
-const canvas = document.getElementById('hero-canvas');
-const ctx = canvas.getContext('2d');
-let W, H, pts = [], branches = [], t = 0;
+(function () {
+  const video = document.getElementById('hero-video');
+  if (!video) return;
 
-function resize() {
-  W = canvas.width = window.innerWidth;
-  H = canvas.height = window.innerHeight;
-}
+  const stillOnly = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-function buildTree() {
-  branches = [];
-  pts = [];
-  const cx = W * .5, cy = H * .62;
-  const ACCENT = '#d8d4c8';
-
-  function branch(x1, y1, x2, y2, depth, maxDepth) {
-    if (depth > maxDepth) return;
-    branches.push({ x1, y1, x2, y2, depth, maxDepth, alpha: (1 - depth / maxDepth) * .7 + .05, w: Math.max(.3, 1.2 - depth * .18) });
-    const dx = x2 - x1, dy = y2 - y1;
-    const len = Math.sqrt(dx*dx + dy*dy) * .7;
-    const angle = Math.atan2(dy, dx);
-    const spread = .35 + depth * .04;
-    const branches2 = depth < 2 ? 3 : 2;
-    const angleStep = (spread * 2) / (branches2 - 1);
-    for (let i = 0; i < branches2; i++) {
-      const a = angle - spread + angleStep * i + (Math.random() - .5) * .15;
-      branch(x2, y2, x2 + Math.cos(a) * len, y2 + Math.sin(a) * len, depth + 1, maxDepth);
+  function apply() {
+    if (stillOnly.matches) {
+      video.removeAttribute('autoplay');
+      video.pause();
+      video.currentTime = 0;
+      return;
     }
-    if (depth === maxDepth) {
-      for (let i = 0; i < 3; i++) {
-        pts.push({
-          x: x2 + (Math.random() - .5) * 20,
-          y: y2 + (Math.random() - .5) * 20,
-          r: Math.random() * 1.2 + .4,
-          alpha: Math.random() * .5 + .3,
-          phase: Math.random() * Math.PI * 2,
-          speed: .4 + Math.random() * .8
+    // Safari/iOS occasionally reject the initial autoplay; retry once muted.
+    const attempt = video.play();
+    if (attempt && typeof attempt.catch === 'function') {
+      attempt.catch(function () {
+        video.muted = true;
+        video.play().catch(function () {
+          // Autoplay blocked outright — the poster frame stands in.
         });
-      }
+      });
     }
   }
 
-  function root(x1, y1, x2, y2, depth, maxDepth) {
-    if (depth > maxDepth) return;
-    branches.push({ x1, y1, x2, y2, depth, maxDepth, alpha: (1 - depth / maxDepth) * .35 + .03, w: Math.max(.25, .9 - depth * .15), isRoot: true });
-    const dx = x2 - x1, dy = y2 - y1;
-    const len = Math.sqrt(dx*dx + dy*dy) * .65;
-    const angle = Math.atan2(dy, dx);
-    const spread = .5 + depth * .05;
-    const n = depth < 1 ? 3 : 2;
-    const step = (spread * 2) / (n - 1);
-    for (let i = 0; i < n; i++) {
-      const a = angle - spread + step * i + (Math.random() - .5) * .2;
-      root(x2, y2, x2 + Math.cos(a) * len, y2 + Math.sin(a) * len, depth + 1, maxDepth);
-    }
-  }
+  apply();
+  stillOnly.addEventListener('change', apply);
 
-  branch(cx, cy, cx, cy - H * .22, 0, 7);
-  const rootLen = H * .12;
-  root(cx, cy, cx - rootLen * .7, cy + rootLen, 0, 4);
-  root(cx, cy, cx + rootLen * .7, cy + rootLen, 0, 4);
-  root(cx, cy, cx - rootLen * 1.1, cy + rootLen * .6, 0, 3);
-  root(cx, cy, cx + rootLen * 1.1, cy + rootLen * .6, 0, 3);
-}
-
-function draw() {
-  t += .008;
-  ctx.clearRect(0, 0, W, H);
-
-  const cx = W * .5, cy = H * .62;
-
-  const gr = ctx.createRadialGradient(cx, cy, 0, cx, cy, H * .45);
-  gr.addColorStop(0, 'rgba(216,212,200,.055)');
-  gr.addColorStop(.5, 'rgba(180,170,150,.025)');
-  gr.addColorStop(1, 'rgba(8,8,8,0)');
-  ctx.fillStyle = gr;
-  ctx.fillRect(0, 0, W, H);
-
-  const rg = ctx.createRadialGradient(cx, H * .92, 0, cx, H * .92, H * .3);
-  rg.addColorStop(0, 'rgba(216,212,200,.055)');
-  rg.addColorStop(1, 'rgba(8,8,8,0)');
-  ctx.fillStyle = rg;
-  ctx.fillRect(0, 0, W, H);
-
-  for (const b of branches) {
-    const flicker = b.isRoot ? 1 : (1 + Math.sin(t * b.w * 2 + b.x1 * .01) * .06);
-    ctx.beginPath();
-    ctx.moveTo(b.x1, b.y1);
-    ctx.lineTo(b.x2, b.y2);
-    ctx.strokeStyle = `rgba(216,212,200,${b.alpha * flicker})`;
-    ctx.lineWidth = b.w;
-    ctx.stroke();
-  }
-
-  ctx.beginPath();
-  ctx.arc(cx, cy, 5, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(255,255,255,${.7 + Math.sin(t * 1.8) * .2})`;
-  ctx.fill();
-
-  ctx.beginPath();
-  ctx.arc(cx, cy, 14 + Math.sin(t * 1.8) * 2, 0, Math.PI * 2);
-  ctx.fillStyle = `rgba(216,212,200,${.1 + Math.sin(t * 1.8) * .04})`;
-  ctx.fill();
-
-  for (const p of pts) {
-    const pulse = .5 + Math.sin(t * p.speed + p.phase) * .4;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(230,226,216,${p.alpha * pulse})`;
-    ctx.fill();
-  }
-
-  requestAnimationFrame(draw);
-}
-
-window.addEventListener('resize', () => { resize(); buildTree(); });
-resize();
-buildTree();
-draw();
+  // Some browsers stall background video on tab switch; nudge it back.
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && !stillOnly.matches && video.paused) apply();
+  });
+})();
 </script>
 </body>
 </html>

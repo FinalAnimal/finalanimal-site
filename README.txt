@@ -4,12 +4,17 @@ A plain static site. No build step, no dependencies. Edit the HTML, push, it dep
 
 ## Files
 
-- `index.html`   — hero landing page with animated point cloud canvas
+- `index.html`   — hero landing page with looping background video
 - `work.html`    — filterable portfolio grid with lightbox
 - `about.html`   — biography and selected works
 - `contact.html` — contact details
 - `404.html`     — not-found page
 - `style.css`    — shared variables and base styles
+- `Assets/`      — media. See "Background video" below.
+
+Everything the site needs to run is committed to this repo. There is no build
+step and nothing is fetched at deploy time, so copying the repo contents to any
+static host or VPS docroot is sufficient — the video comes with it.
 
 ## Hosting
 
@@ -111,11 +116,50 @@ Fonts via Google Fonts (already linked):
   Cormorant Garamond — display/headings
   Inter              — labels, nav, small caps details
 
-Point cloud tree on the homepage:
-  All canvas animation is in the <script> block at the bottom of index.html.
-  Adjust branch depth (7), spread angles, and animation speed (t += .008) to taste.
-  When you have a cables.gl scene ready, replace the <canvas> element with
-  the cables.gl embed iframe and delete the canvas script block.
+## Background video (homepage)
+
+The landing page background is a muted, looping video. Files:
+
+  Assets/GSTest_Small.mov     master, as exported — 1920x1080 60fps, 12.8 MB.
+                              Not used by the site. Kept here as the source to
+                              re-encode from.
+  Assets/video/hero.mp4       what the page actually plays — 6.8 MB
+  Assets/video/hero-poster.jpg  first frame, shown before the video paints
+
+The markup is the <video> element at the top of <body> in index.html; the paths
+are relative, so they survive being moved to any docroot unchanged. Note that
+most hosts (Cloudflare Pages included) are case-sensitive: the folder is
+`Assets`, capital A.
+
+The .mov is deliberately NOT referenced by the page. QuickTime .mov does not
+play in Firefox and is unreliable in some Chrome builds, so it is transcoded to
+H.264 MP4. To re-encode after replacing the master:
+
+  ffmpeg -i Assets/GSTest_Small.mov -an -sn -dn -r 30 \
+    -c:v libx264 -profile:v high -pix_fmt yuv420p -crf 30 -preset slow \
+    -movflags +faststart Assets/video/hero.mp4
+
+  ffmpeg -i Assets/GSTest_Small.mov -frames:v 1 -q:v 4 Assets/video/hero-poster.jpg
+
+  -an -sn -dn      strips audio and the timecode track — a background loop is
+                   muted anyway, and the master's audio was uncompressed PCM
+  +faststart       moves the index to the front so playback starts before the
+                   whole file has downloaded
+  -crf             quality knob, lower = better + bigger. This footage is
+                   painterly and compresses badly; 30 is the sweet spot. VP9
+                   WebM was tried and came out *larger* than the MP4, so the
+                   site ships MP4 only.
+
+Keep it under 25 MiB — that is Cloudflare Pages' per-file limit.
+
+Legibility: the video sits under `.hero-scrim`, a dark gradient that keeps the
+bone-coloured type readable over bright frames. The ENTER button carries its own
+darker backdrop because it sits mid-screen where the scrim is thinnest. If you
+swap in brighter footage, those are the two knobs to adjust.
+
+Reduced motion: visitors with "reduce motion" set get the poster frame held
+still instead of playback. Handled in the script block at the bottom of
+index.html.
 
 ## Adding more portfolio pieces
 
