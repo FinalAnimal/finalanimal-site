@@ -12,29 +12,25 @@
   <style>
     body { background: #080808; overflow: hidden; height: 100vh; }
 
-    #hero-video {
+    .hero-image {
       position: fixed;
       inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
       z-index: 0;
-      background: #080808 url("Assets/video/hero-poster.jpg") center / cover no-repeat;
+      background: #080808 url("Assets/ManuallyGathered/Gallery/outdoor%20black%20and%20white.jpg") center / cover no-repeat;
     }
 
-    /* Scrim — darkens only the bands the type sits in, so the footage keeps its
-       colour through the middle. Tuned against per-frame luminance of hero.mp4:
-       every text region holds >=4.9:1 contrast at the 95th-percentile frame. */
+    /* Scrim — darkens only the bands the type sits in, so the image stays
+       bright through the middle. */
     .hero-scrim {
       position: fixed;
       inset: 0;
       z-index: 1;
       pointer-events: none;
       background: linear-gradient(to bottom,
-        rgba(8,8,8,.46) 0%,
-        rgba(8,8,8,.06) 22%,
-        rgba(8,8,8,.10) 55%,
-        rgba(8,8,8,.66) 100%);
+        rgba(8,8,8,.62) 0%,
+        rgba(8,8,8,.10) 24%,
+        rgba(8,8,8,.14) 55%,
+        rgba(8,8,8,.78) 100%);
     }
 
     .hero-ui {
@@ -53,6 +49,7 @@
       font-size: 11px;
       letter-spacing: .16em;
       color: var(--accent);
+      text-shadow: 0 1px 3px rgba(8,8,8,.9), 0 0 14px rgba(8,8,8,.7);
       margin-bottom: 16px;
       opacity: 0;
       animation: fadeUp .8s ease .4s forwards;
@@ -75,6 +72,7 @@
       font-size: 12px;
       letter-spacing: .14em;
       color: var(--accent-dim);
+      text-shadow: 0 1px 3px rgba(8,8,8,.9), 0 0 14px rgba(8,8,8,.7);
       margin-bottom: 40px;
       opacity: 0;
       animation: fadeUp .8s ease 1.0s forwards;
@@ -97,7 +95,7 @@
       border: 0.5px solid rgba(242,239,231,.38);
       padding: 15px 42px;
       /* Sits mid-screen where the scrim is thinnest — carries its own backdrop
-         so the label holds up against the footage's brightest frames. */
+         so the label holds up against the image's brightest areas. */
       background: rgba(8,8,8,.30);
       backdrop-filter: blur(8px);
       cursor: pointer;
@@ -187,8 +185,6 @@
       .scroll-hint { right: 28px; bottom: 44px; }
     }
 
-    /* Reduced motion is handled in script — the video holds on its poster frame. */
-
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(18px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -205,13 +201,7 @@
 </head>
 <body>
 
-<video id="hero-video"
-       autoplay muted loop playsinline
-       preload="auto"
-       poster="Assets/video/hero-poster.jpg"
-       aria-hidden="true" tabindex="-1">
-  <source src="Assets/video/hero.mp4" type="video/mp4">
-</video>
+<div class="hero-image" aria-hidden="true"></div>
 
 <div class="hero-scrim"></div>
 
@@ -236,40 +226,5 @@
 
 <div class="scroll-hint">finalanimal.com</div>
 
-<script>
-(function () {
-  const video = document.getElementById('hero-video');
-  if (!video) return;
-
-  const stillOnly = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  function apply() {
-    if (stillOnly.matches) {
-      video.removeAttribute('autoplay');
-      video.pause();
-      video.currentTime = 0;
-      return;
-    }
-    // Safari/iOS occasionally reject the initial autoplay; retry once muted.
-    const attempt = video.play();
-    if (attempt && typeof attempt.catch === 'function') {
-      attempt.catch(function () {
-        video.muted = true;
-        video.play().catch(function () {
-          // Autoplay blocked outright — the poster frame stands in.
-        });
-      });
-    }
-  }
-
-  apply();
-  stillOnly.addEventListener('change', apply);
-
-  // Some browsers stall background video on tab switch; nudge it back.
-  document.addEventListener('visibilitychange', function () {
-    if (!document.hidden && !stillOnly.matches && video.paused) apply();
-  });
-})();
-</script>
 </body>
 </html>
